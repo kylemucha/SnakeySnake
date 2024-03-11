@@ -209,7 +209,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             mCanvas.drawText("Kyle Mucha",1520, 120, mPaint);
             mCanvas.drawText("Jalen Grant Mucha",1120, 220, mPaint);
-
+            mCanvas.drawText("test for github", 350, 350, mPaint);
             // Draw the score
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
 
