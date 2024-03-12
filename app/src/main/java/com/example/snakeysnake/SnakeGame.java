@@ -3,6 +3,8 @@ package com.example.snakeysnake;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -47,6 +49,9 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Snake mSnake;
     // And an apple
     private Apple mApple;
+
+    private Bitmap mBitmapKingscourt;
+
 
 
     // This is the constructor method that gets called
@@ -207,13 +212,24 @@ class SnakeGame extends SurfaceView implements Runnable{
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(120);
 
+            // Draw unique background
+            mBitmapKingscourt = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.kingscourt);
+            mBitmapKingscourt = Bitmap.createScaledBitmap(mBitmapKingscourt, 2250, 1015, false);
+            mCanvas.drawBitmap(mBitmapKingscourt, 0, 0, mPaint);
+
+
+
+
+
+            // Draw student's names
             mCanvas.drawText("Kyle Mucha",1520, 120, mPaint);
             mCanvas.drawText("Jalen Grant Mucha",1120, 220, mPaint);
-            mCanvas.drawText("test for github", 350, 350, mPaint);
+
             // Draw the score
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
 
             // Draw the apple and the snake
+
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
 

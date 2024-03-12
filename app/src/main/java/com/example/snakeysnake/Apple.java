@@ -21,7 +21,7 @@ class Apple {
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
-
+//
     /// Set up the apple in the constructor
     Apple(Context context, Point sr, int s){
 
