@@ -222,8 +222,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
 
             // Draw student's names
-            mCanvas.drawText("Kyle Mucha",1520, 120, mPaint);
-            mCanvas.drawText("Jalen Grant Mucha",1120, 220, mPaint);
+            mCanvas.drawText("Kyle Mucha",1484, 175, mPaint);
+            mCanvas.drawText("Jalen Grant Hall",1245, 280, mPaint);
 
             // Draw the score
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
@@ -238,11 +238,11 @@ class SnakeGame extends SurfaceView implements Runnable{
 
                 // Set the size and color of the mPaint for the text
                 mPaint.setColor(Color.argb(255, 255, 255, 255));
-                mPaint.setTextSize(250);
+                mPaint.setTextSize(170);
 
                 // Draw the message
                 // We will give this an international upgrade soon
-                mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+                mCanvas.drawText("Tap To Play!", 200, 820, mPaint);
                 //mCanvas.drawText(getResources().
                 //                getString(R.string.tap_to_play),
                 //        200, 700, mPaint);
