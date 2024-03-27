@@ -231,8 +231,6 @@ class SnakeGame extends SurfaceView implements Runnable {
 
 
 
-
-
             // Draw student's names
             mCanvas.drawText("Kyle Mucha",1484, 175, mPaint);
             mCanvas.drawText("Jalen Grant Hall",1245, 280, mPaint);
@@ -283,7 +281,11 @@ class SnakeGame extends SurfaceView implements Runnable {
                     newGame();
                     // Don't want to process snake direction for this tap
                     return true;
-                } else if (touchX >= 1960 && touchX <= 2088 && touchY >= 808 && touchY <= 936){
+                }
+                if (touchX >= 1960 && touchX <= 2088 && touchY >= 808 && touchY <= 936) {
+                    mBitmapResume = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.resume);
+                    mBitmapResume = Bitmap.createScaledBitmap(mBitmapResume, 128, 128, false);
+                    mCanvas.drawBitmap(mBitmapResume, 1960, 808, mPaint);
                     mPaused = true;
                 }
                 // Let the Snake class handle the input
