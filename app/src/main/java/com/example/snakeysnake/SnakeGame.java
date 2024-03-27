@@ -270,14 +270,19 @@ class SnakeGame extends SurfaceView implements Runnable{
     public boolean onTouchEvent(MotionEvent motionEvent) {
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
+                float touchX = motionEvent.getX();
+                float touchY = motionEvent.getY();
+
+            if (touchX >= 1960 && touchX <= 2088 && touchY >= 808 && touchY <= 936) {
                 if (mPaused) {
                     mPaused = false;
                     newGame();
-
                     // Don't want to process snake direction for this tap
-                    return true;
+                } else {
+                    mPaused = true;
                 }
-
+                return true;
+            }
                 // Let the Snake class handle the input
                 mSnake.switchHeading(motionEvent);
                 break;
