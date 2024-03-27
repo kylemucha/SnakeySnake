@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -51,6 +52,8 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Apple mApple;
 
     private Bitmap mBitmapKingscourt;
+
+    private Bitmap mBitmapPause;
 
 
 
@@ -185,7 +188,7 @@ class SnakeGame extends SurfaceView implements Runnable{
             mScore = mScore + 1;
 
             // Play a sound
-            mSP.play(mEat_ID, 1, 1, 0, 0, 1);
+            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
         }
 
         // Did the snake die?
@@ -195,6 +198,8 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             mPaused =true;
         }
+
+        // Did the player pause the game?
 
     }
 
@@ -209,13 +214,17 @@ class SnakeGame extends SurfaceView implements Runnable{
             mCanvas.drawColor(Color.argb(255, 26, 128, 182));
 
             // Set the size and color of the mPaint for the text
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            mPaint.setColor(Color.argb(255, 168, 39, 245));
             mPaint.setTextSize(120);
 
             // Draw unique background
             mBitmapKingscourt = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.kingscourt);
             mBitmapKingscourt = Bitmap.createScaledBitmap(mBitmapKingscourt, 2250, 1015, false);
             mCanvas.drawBitmap(mBitmapKingscourt, 0, 0, mPaint);
+
+            mBitmapPause = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pause);
+            mBitmapPause = Bitmap.createScaledBitmap(mBitmapPause, 128, 128, false);
+            mCanvas.drawBitmap(mBitmapPause, 1960, 808, mPaint);
 
 
 
@@ -237,11 +246,14 @@ class SnakeGame extends SurfaceView implements Runnable{
             if(mPaused){
 
                 // Set the size and color of the mPaint for the text
-                mPaint.setColor(Color.argb(255, 255, 255, 255));
+                mPaint.setColor(Color.argb(255, 168, 39, 245));
                 mPaint.setTextSize(170);
 
                 // Draw the message
                 // We will give this an international upgrade soon
+
+                Typeface typeface = Typeface.create(Typeface.SANS_SERIF , Typeface.BOLD_ITALIC);
+                mPaint.setTypeface(typeface);
                 mCanvas.drawText("Tap To Play!", 200, 820, mPaint);
                 //mCanvas.drawText(getResources().
                 //                getString(R.string.tap_to_play),
