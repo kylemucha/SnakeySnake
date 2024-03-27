@@ -56,6 +56,8 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     private Bitmap mBitmapPause;
 
+    private Bitmap mBitmapResume;
+
 
 
     // This is the constructor method that gets called
@@ -273,24 +275,22 @@ class SnakeGame extends SurfaceView implements Runnable {
             case MotionEvent.ACTION_UP:
                 float touchX = motionEvent.getX();
                 float touchY = motionEvent.getY();
-
-            if (touchX >= 1960 && touchX <= 2088 && touchY >= 808 && touchY <= 936) {
                 if (mPaused) {
+                    mBitmapPause = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pause);
+                    mBitmapPause = Bitmap.createScaledBitmap(mBitmapPause, 128, 128, false);
+                    mCanvas.drawBitmap(mBitmapPause, 1960, 808, mPaint);
                     mPaused = false;
                     newGame();
                     // Don't want to process snake direction for this tap
-                } else {
+                    return true;
+                } else if (touchX >= 1960 && touchX <= 2088 && touchY >= 808 && touchY <= 936){
                     mPaused = true;
                 }
-                return true;
-            }
                 // Let the Snake class handle the input
                 mSnake.switchHeading(motionEvent);
                 break;
-
             default:
                 break;
-
         }
         return true;
     }
