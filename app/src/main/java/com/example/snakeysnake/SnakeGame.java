@@ -30,6 +30,7 @@ class SnakeGame extends SurfaceView implements Runnable {
     private Snake mSnake;
 
     private GameUI mGameUI;
+    private GameAudio mGameAudio;
 
     private boolean mGameStarted = false;
 
@@ -38,32 +39,19 @@ class SnakeGame extends SurfaceView implements Runnable {
         int blockSize = size.x / NUM_BLOCKS_WIDE;
         mNumBlocksHigh = size.y / blockSize;
 
-        // Initialize the SoundPool
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
-            mSP = new SoundPool.Builder()
-                    .setMaxStreams(5)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        } else {
-            mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        }
-        try {
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor descriptor;
-            descriptor = assetManager.openFd("get_apple.ogg");
-            mEat_ID = mSP.load(descriptor, 0);
-            descriptor = assetManager.openFd("snake_death.ogg");
-            mCrashID = mSP.load(descriptor, 0);
-        } catch (IOException e) {
-            // Error handling
-        }
+        initializeAudio(context);       // Initialize audio
+        initializeGameObjects(context, blockSize);
+        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple); // Initialize GameUI
+    }
 
-        SurfaceHolder surfaceHolder = getHolder();
+    private void initializeAudio(Context context) {
+        mGameAudio = new GameAudio(context);
+        mSP = mGameAudio.getSoundPool();
+        mEat_ID = mGameAudio.getEatSoundId();
+        mCrashID = mGameAudio.getCrashSoundId();
+    }
 
+    private void initializeGameObjects(Context context, int blockSize) {
         // Call the constructors of our two game objects
         mApple = new Apple(context,
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
@@ -72,9 +60,6 @@ class SnakeGame extends SurfaceView implements Runnable {
         mSnake = new Snake(context,
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
-
-        // Initialize the GameUI
-        mGameUI = new GameUI(context, surfaceHolder, mScore, mSnake, mApple);
     }
 
     public void newGame() {
