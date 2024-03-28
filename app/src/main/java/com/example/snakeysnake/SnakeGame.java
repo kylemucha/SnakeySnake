@@ -58,6 +58,8 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     private Bitmap mBitmapResume;
 
+    boolean temp = false;
+
 
 
     // This is the constructor method that gets called
@@ -119,7 +121,6 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     // Called to start a new game
     public void newGame() {
-
         // reset the snake
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
 
@@ -244,7 +245,7 @@ class SnakeGame extends SurfaceView implements Runnable {
             mSnake.draw(mCanvas, mPaint);
 
             // Draw some text while paused
-            if(mPaused){
+            if (mPaused) {
 
                 // Set the size and color of the mPaint for the text
                 mPaint.setColor(Color.argb(255, 168, 39, 245));
@@ -253,14 +254,12 @@ class SnakeGame extends SurfaceView implements Runnable {
                 // Draw the message
                 // We will give this an international upgrade soon
 
-                Typeface typeface = Typeface.create(Typeface.SANS_SERIF , Typeface.BOLD_ITALIC);
+                Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC);
                 mPaint.setTypeface(typeface);
                 mCanvas.drawText("Tap To Play!", 200, 820, mPaint);
-                //mCanvas.drawText(getResources().
-                //                getString(R.string.tap_to_play),
-                //        200, 700, mPaint);
+            } else if (mPaused && temp){
+                mCanvas.drawText("Tap Button to Resume!", 200, 820, mPaint);
             }
-
 
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
@@ -273,34 +272,40 @@ class SnakeGame extends SurfaceView implements Runnable {
             case MotionEvent.ACTION_UP:
                 float touchX = motionEvent.getX();
                 float touchY = motionEvent.getY();
+
                 if (mPaused) {
-                    mBitmapPause = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pause);
-                    mBitmapPause = Bitmap.createScaledBitmap(mBitmapPause, 128, 128, false);
-                    mCanvas.drawBitmap(mBitmapPause, 1960, 808, mPaint);
                     mPaused = false;
                     newGame();
                     // Don't want to process snake direction for this tap
                     return true;
                 }
+
                 if (touchX >= 1960 && touchX <= 2088 && touchY >= 808 && touchY <= 936) {
-                    mBitmapResume = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.resume);
-                    mBitmapResume = Bitmap.createScaledBitmap(mBitmapResume, 128, 128, false);
-                    mCanvas.drawBitmap(mBitmapResume, 1960, 808, mPaint);
-                    mPaused = true;
+                    if(temp){
+                        resume();
+                    }
+                    if (!temp) {
+                        pause();
+                        temp = true;
+                        break;
+                    }
+                    break;
                 }
                 // Let the Snake class handle the input
                 mSnake.switchHeading(motionEvent);
                 break;
             default:
                 break;
+
         }
         return true;
     }
 
-
     // Stop the thread
     public void pause() {
         mPlaying = false;
+        Typeface typeface = Typeface.create(Typeface.SANS_SERIF , Typeface.BOLD_ITALIC);
+        mPaint.setTypeface(typeface);
         try {
             mThread.join();
         } catch (InterruptedException e) {
