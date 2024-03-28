@@ -29,5 +29,4 @@ abstract class GameObject implements Movable, Drawable {
     public boolean isOutOfBounds(Point bounds) {
         return location.x < 0 || location.x >= bounds.x || location.y < 0 || location.y >= bounds.y;
     }
-
 }
