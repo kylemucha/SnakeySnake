@@ -86,11 +86,11 @@ public class GameUI {
     public void displayTapToPlayMessage() {
         synchronized (mCanvas) {
             mPaint.setColor(Color.argb(255, 168, 39, 245));
-            mPaint.setTextSize(120);
+            mPaint.setTextSize(75);
             Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC);
             mPaint.setTypeface(typeface);
 
-            mCanvas.drawText("Tap To Play!", 200, 820, mPaint);
+            mCanvas.drawText("Tap the Play Button!", 170, 930, mPaint);
         }
     }
 
