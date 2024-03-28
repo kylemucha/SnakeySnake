@@ -13,122 +13,122 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
 
-class SnakeGame extends SurfaceView implements Runnable {
+    class SnakeGame extends SurfaceView implements Runnable {
 
-    private Thread mThread = null;
-    private long mNextFrameTime;
-    private volatile boolean mPlaying = false;
-    private volatile boolean mPaused = true;
-    private SoundPool mSP;
-    private int mEat_ID = -1;
-    private int mCrashID = -1;
-    private final int NUM_BLOCKS_WIDE = 40;
-    private int mNumBlocksHigh;
-    private int mScore;
+        private Thread mThread = null;
+        private long mNextFrameTime;
+        private volatile boolean mPlaying = false;
+        private volatile boolean mPaused = true;
+        private SoundPool mSP;
+        private int mEat_ID = -1;
+        private int mCrashID = -1;
+        private final int NUM_BLOCKS_WIDE = 40;
+        private int mNumBlocksHigh;
+        private int mScore;
 
-    private Apple mApple;
-    private Snake mSnake;
+        private Apple mApple;
+        private Snake mSnake;
 
-    private GameUI mGameUI;
+        private GameUI mGameUI;
 
-    private boolean mGameStarted = false;
+        private boolean mGameStarted = false;
 
-    public SnakeGame(Context context, Point size) {
-        super(context);
-        int blockSize = size.x / NUM_BLOCKS_WIDE;
-        mNumBlocksHigh = size.y / blockSize;
+        public SnakeGame(Context context, Point size) {
+            super(context);
+            int blockSize = size.x / NUM_BLOCKS_WIDE;
+            mNumBlocksHigh = size.y / blockSize;
 
-        // Initialize the SoundPool
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
-            mSP = new SoundPool.Builder()
-                    .setMaxStreams(5)
-                    .setAudioAttributes(audioAttributes)
-                    .build();
-        } else {
-            mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        }
-        try {
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor descriptor;
-            descriptor = assetManager.openFd("get_apple.ogg");
-            mEat_ID = mSP.load(descriptor, 0);
-            descriptor = assetManager.openFd("snake_death.ogg");
-            mCrashID = mSP.load(descriptor, 0);
-        } catch (IOException e) {
-            // Error handling
-        }
-
-        SurfaceHolder surfaceHolder = getHolder();
-
-        // Call the constructors of our two game objects
-        mApple = new Apple(context,
-                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
-                blockSize);
-
-        mSnake = new Snake(context,
-                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
-                blockSize);
-
-        // Initialize the GameUI
-        mGameUI = new GameUI(context, surfaceHolder, mScore, mSnake, mApple);
-    }
-
-    public void newGame() {
-        mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
-        mApple.spawn();
-        mScore = 0;
-        mNextFrameTime = System.currentTimeMillis();
-    }
-
-    @Override
-    public void run() {
-        while (mPlaying) {
-            if (!mPaused) {
-                if (updateRequired()) {
-                    update();
-                }
+            // Initialize the SoundPool
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build();
+                mSP = new SoundPool.Builder()
+                        .setMaxStreams(5)
+                        .setAudioAttributes(audioAttributes)
+                        .build();
+            } else {
+                mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
             }
-            mGameUI.draw();
-        }
-    }
+            try {
+                AssetManager assetManager = context.getAssets();
+                AssetFileDescriptor descriptor;
+                descriptor = assetManager.openFd("get_apple.ogg");
+                mEat_ID = mSP.load(descriptor, 0);
+                descriptor = assetManager.openFd("snake_death.ogg");
+                mCrashID = mSP.load(descriptor, 0);
+            } catch (IOException e) {
+                // Error handling
+            }
 
-    public boolean updateRequired() {
-        final long TARGET_FPS = 10;
-        final long MILLIS_PER_SECOND = 1000;
-        if (mNextFrameTime <= System.currentTimeMillis()) {
-            mNextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / TARGET_FPS;
-            return true;
-        }
-        return false;
-    }
+            SurfaceHolder surfaceHolder = getHolder();
 
-    public void update() {
-        if (!mGameStarted || mPaused) {
-            return;
+            // Call the constructors of our two game objects
+            mApple = new Apple(context,
+                    new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
+                    blockSize);
+
+            mSnake = new Snake(context,
+                    new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
+                    blockSize);
+
+            // Initialize the GameUI
+            mGameUI = new GameUI(context, surfaceHolder, mScore, mSnake, mApple);
         }
-        mSnake.move();
-        if (mSnake.checkDinner(mApple.getLocation())) {
+
+        public void newGame() {
+            mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
             mApple.spawn();
-            mScore++;
-            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
-        }
-        if (mSnake.detectDeath()) {
-            mSP.play(mCrashID, 1, 1, 0, 0, 1);
-            mPaused = true;
-            mGameStarted = false;
-            mGameUI.displayTapToPlayMessage();
+            mScore = 0;
+            mNextFrameTime = System.currentTimeMillis();
         }
 
-        mGameUI.setScore(mScore);
-        mGameUI.setGameStarted(mGameStarted);
-    }
+        @Override
+        public void run() {
+            while (mPlaying) {
+                if (!mPaused) {
+                    if (updateRequired()) {
+                        update();
+                    }
+                }
+                mGameUI.draw();
+            }
+        }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
+        public boolean updateRequired() {
+            final long TARGET_FPS = 10;
+            final long MILLIS_PER_SECOND = 1000;
+            if (mNextFrameTime <= System.currentTimeMillis()) {
+                mNextFrameTime = System.currentTimeMillis() + MILLIS_PER_SECOND / TARGET_FPS;
+                return true;
+            }
+            return false;
+        }
+
+        public void update() {
+            if (!mGameStarted || mPaused) {
+                return;
+            }
+            mSnake.move();
+            if (mSnake.checkDinner(mApple.getLocation())) {
+                mApple.spawn();
+                mScore++;
+                mSP.play(mEat_ID, 100, 100, 0, 0, 1);
+            }
+            if (mSnake.detectDeath()) {
+                mSP.play(mCrashID, 1, 1, 0, 0, 1);
+                mPaused = true;
+                mGameStarted = false;
+                mGameUI.displayTapToPlayMessage();
+            }
+
+            mGameUI.setScore(mScore);
+            mGameUI.setGameStarted(mGameStarted);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 float touchX = motionEvent.getX();
                 float touchY = motionEvent.getY();
@@ -160,20 +160,21 @@ class SnakeGame extends SurfaceView implements Runnable {
             return true;
         }
 
-    public void pause() {
-        mPlaying = false;
-        mPaused = true;
-        try {
-            mThread.join();
-        } catch (InterruptedException e) {
-            // Error handling
+        public void pause() {
+            mPlaying = false;
+            mPaused = true;
+            try {
+                mThread.join();
+            } catch (InterruptedException e) {
+                // Error handling
+            }
+        }
+
+        public void resume() {
+            mPlaying = true;
+            mPaused = false;
+            mThread = new Thread(this);
+            mThread.start();
         }
     }
 
-    public void resume() {
-        mPlaying = true;
-        mPaused = false;
-        mThread = new Thread(this);
-        mThread.start();
-    }
-}
