@@ -21,9 +21,9 @@ class Apple implements Drawable {
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
-//
-    /// Set up the apple in the constructor
-    Apple(Context context, Point sr, int s){
+
+    // Set up the apple in the constructor
+    Apple(Context context, Point sr, int s) {
 
         // Make a note of the passed in spawn range
         mSpawnRange = sr;

@@ -28,7 +28,7 @@ import java.io.IOException;
 
         private Apple mApple;
         private Snake mSnake;
-
+        private GameAudio mGameAudio;
         private GameUI mGameUI;
 
         private boolean mGameStarted = false;
@@ -38,32 +38,12 @@ import java.io.IOException;
             int blockSize = size.x / NUM_BLOCKS_WIDE;
             mNumBlocksHigh = size.y / blockSize;
 
-            // Initialize the SoundPool
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build();
-                mSP = new SoundPool.Builder()
-                        .setMaxStreams(5)
-                        .setAudioAttributes(audioAttributes)
-                        .build();
-            } else {
-                mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-            }
-            try {
-                AssetManager assetManager = context.getAssets();
-                AssetFileDescriptor descriptor;
-                descriptor = assetManager.openFd("get_apple.ogg");
-                mEat_ID = mSP.load(descriptor, 0);
-                descriptor = assetManager.openFd("snake_death.ogg");
-                mCrashID = mSP.load(descriptor, 0);
-            } catch (IOException e) {
-                // Error handling
-            }
+            GameAudio.buildAudio(context);      //  Initialize the GameAudio
+            initializeGameObjects(context, blockSize);
+            mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple);     // Initialize GameUI
+        }
 
-            SurfaceHolder surfaceHolder = getHolder();
-
+        private void initializeGameObjects(Context context, int blockSize) {
             // Call the constructors of our two game objects
             mApple = new Apple(context,
                     new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
@@ -72,9 +52,6 @@ import java.io.IOException;
             mSnake = new Snake(context,
                     new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                     blockSize);
-
-            // Initialize the GameUI
-            mGameUI = new GameUI(context, surfaceHolder, mScore, mSnake, mApple);
         }
 
         public void newGame() {
