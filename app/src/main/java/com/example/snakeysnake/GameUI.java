@@ -19,7 +19,7 @@ public class GameUI {
     private static boolean mPaused;
     private static Snake mSnake;
     private static Apple mApple;
-    private static Obstacle mObstacle;
+    protected static Obstacle mObstacle;
 
     private static Bitmap mBitmapKingscourt;
     private static Bitmap mBitmapPause;

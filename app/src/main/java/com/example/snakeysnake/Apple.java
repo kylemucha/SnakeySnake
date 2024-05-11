@@ -43,8 +43,26 @@ class Apple implements Drawable {
     void spawn(){
         // Choose two random values and place the apple
         Random random = new Random();
-        location.x = random.nextInt(mSpawnRange.x) + 1;
-        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
+        do {
+            location.x = random.nextInt(mSpawnRange.x) + 1;
+            location.y = random.nextInt(mSpawnRange.y - 1) + 1;
+        } while(locationIsTooCloseToObstacle());
+    }
+
+    // Check if the apple's location is too close to any obstacle
+    private boolean locationIsTooCloseToObstacle() {
+        for (Point obstacleLoc : GameUI.mObstacle.getLocations()) {
+            // Calculate the distance between the apple and the obstacle
+            int distanceX = Math.abs(location.x - obstacleLoc.x);
+            int distanceY = Math.abs(location.y - obstacleLoc.y);
+            int distance = Math.max(distanceX, distanceY);
+
+            // Check if the distance is less than a certain threshold (5 pixels)
+            if (distance < 5) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Let SnakeGame know where the apple is

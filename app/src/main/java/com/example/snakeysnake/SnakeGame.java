@@ -34,6 +34,8 @@ class SnakeGame extends SurfaceView implements Runnable {
     private boolean mGameStarted = false;
 
     private Obstacle mObstacle;
+    private static final int NUM_OBSTACLES = 5;
+
 
 
     public SnakeGame(Context context, Point size) {
@@ -43,21 +45,7 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         initializeAudio(context);       // Initialize audio
         initializeGameObjects(context, blockSize);
-
-        Point[] obstacleLocations = {
-                new Point(5, 16),
-                new Point(7, 16),
-                new Point(9, 15),
-                new Point(11, 14),
-                new Point(12, 12),
-                new Point(13, 10)
-        };
-        mObstacle = new Obstacle(context, obstacleLocations, blockSize);
-
-        // Now initialize GameUI with all required objects
         mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle);
-
-
     }
 
     private void initializeAudio(Context context) {
@@ -77,6 +65,9 @@ class SnakeGame extends SurfaceView implements Runnable {
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
 
+        mObstacle = new Obstacle(context,
+                new Point[]{new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh)},
+                blockSize);
     }
 
     public void newGame() {
@@ -84,6 +75,7 @@ class SnakeGame extends SurfaceView implements Runnable {
         mApple.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
+        mObstacle.generateRandomLocations(new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), NUM_OBSTACLES);   // Generate random obstacle locations
     }
 
     @Override

@@ -9,6 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
+import java.util.Random;
+
 class Obstacle implements Drawable {
     private Bitmap mBitmapObstacle;
     private Point[] locations;
@@ -20,6 +22,16 @@ class Obstacle implements Drawable {
         this.locations = locs;
         mBitmapObstacle = BitmapFactory.decodeResource(context.getResources(), cone);
         mBitmapObstacle = Bitmap.createScaledBitmap(mBitmapObstacle, size, size, false);
+    }
+
+    public void generateRandomLocations(Point gridSize, int numObstacles) {
+        Random random = new Random();
+        locations = new Point[numObstacles]; // Use the specified number of obstacles
+        for (int i = 0; i < numObstacles; i++) {
+            int x = random.nextInt(gridSize.x);
+            int y = random.nextInt(gridSize.y);
+            locations[i] = new Point(x, y);
+        }
     }
 
     @Override
