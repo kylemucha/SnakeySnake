@@ -43,6 +43,11 @@ class Snake extends GameObject implements Drawable, Movable {
     // A bitmap for the body
     private Bitmap mBitmapBody;
 
+    // Return the location of all the segments
+    public ArrayList<Point> getSegmentLocations() {
+        return segmentLocations;
+    }
+
 
     Snake(Context context, Point mr, int ss) {
         super();
