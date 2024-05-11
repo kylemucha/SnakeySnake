@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
-
 class SnakeGame extends SurfaceView implements Runnable {
 
     private Thread mThread = null;
@@ -34,6 +33,9 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     private boolean mGameStarted = false;
 
+    private Obstacle mObstacle;
+
+
     public SnakeGame(Context context, Point size) {
         super(context);
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -41,7 +43,21 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         initializeAudio(context);       // Initialize audio
         initializeGameObjects(context, blockSize);
-        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple); // Initialize GameUI
+
+        Point[] obstacleLocations = {
+                new Point(5, 16),
+                new Point(7, 16),
+                new Point(9, 15),
+                new Point(11, 14),
+                new Point(12, 12),
+                new Point(13, 10)
+        };
+        mObstacle = new Obstacle(context, obstacleLocations, blockSize);
+
+        // Now initialize GameUI with all required objects
+        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle);
+
+
     }
 
     private void initializeAudio(Context context) {
@@ -60,6 +76,7 @@ class SnakeGame extends SurfaceView implements Runnable {
         mSnake = new Snake(context,
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
+
     }
 
     public void newGame() {
@@ -101,7 +118,7 @@ class SnakeGame extends SurfaceView implements Runnable {
             mScore++;
             mSP.play(mEat_ID, 100, 100, 0, 0, 1);
         }
-        if (mSnake.detectDeath()) {
+        if (mSnake.detectDeath() || checkCollisionWithObstacle()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
             mPaused = true;
             mGameStarted = false;
@@ -110,6 +127,16 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         mGameUI.setScore(mScore);
         mGameUI.setGameStarted(mGameStarted);
+    }
+
+    private boolean checkCollisionWithObstacle() {
+        Point head = mSnake.getSegmentLocations().get(0);
+        for (Point loc : mObstacle.getLocations()) {
+            if (head.equals(loc)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

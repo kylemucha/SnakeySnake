@@ -19,17 +19,20 @@ public class GameUI {
     private static boolean mPaused;
     private static Snake mSnake;
     private static Apple mApple;
+    private static Obstacle mObstacle;
+
     private static Bitmap mBitmapKingscourt;
     private static Bitmap mBitmapPause;
     private boolean mGameStarted = false;
 
-    public GameUI(Context context, SurfaceHolder surfaceHolder, int score, Snake snake, Apple apple) {
+    public GameUI(Context context, SurfaceHolder surfaceHolder, int score, Snake snake, Apple apple, Obstacle obstacle) {
         mContext = context;
         mSurfaceHolder = surfaceHolder;
         mPaint = new Paint();
         mScore = score;
         mSnake = snake;
         mApple = apple;
+        mObstacle = obstacle; // Passed from the game engine initialization
     }
 
     public void draw() {
@@ -81,6 +84,8 @@ public class GameUI {
         mPaint.setTextSize(60);
         mCanvas.drawText("Kyle Jacob Mucha", 1600, 130, mPaint);
         mCanvas.drawText("Jalen Grant Hall", 1630, 190, mPaint);
+        mCanvas.drawText("Galileo Alejandro Perez", 1500, 250, mPaint);
+
     }
 
     public void displayTapToPlayMessage() {
@@ -105,6 +110,7 @@ public class GameUI {
     private static void displayGameObjects() {
         mApple.draw(mCanvas, mPaint);
         mSnake.draw(mCanvas, mPaint);
+        mObstacle.draw(mCanvas, mPaint); // Draw obstacles
     }
 
     public static void displayContinueMessage() {
