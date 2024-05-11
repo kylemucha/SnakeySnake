@@ -1,4 +1,4 @@
-# SnakeySnake (Assignment #3)
-# By Kyle Mucha & Jalen Grant Hall
+# SnakeySnake (Final Project)
+# By Kyle Mucha & Jalen Grant Hall & Galileo Alejandro Perez
 
-This is the repository for the Snake game clone we are working on and improving for assignment 3 in CSC 133 Professor Ataya.
+This is the repository for the Snake game clone we are working on and improving for the Final Project in CSC 133 with Professor Ataya.

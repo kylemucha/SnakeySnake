@@ -40,15 +40,15 @@ public class GameUI {
             mCanvas = mSurfaceHolder.lockCanvas();
 
             displayBackground();
-            displayAuthorNames();
 
             if (!mGameStarted) {
                 displayTapToPlayMessage();
+                displayAuthorNames();
             } else {
                 displayScore(mCanvas, mPaint, mScore);
                 displayGameObjects();
                 if(mPaused) {
-                    displayContinueMessage();
+
                 }
                 else {
 
@@ -82,9 +82,9 @@ public class GameUI {
     public static void displayAuthorNames() {
         mPaint.setColor(Color.argb(255, 168, 39, 182));
         mPaint.setTextSize(60);
-        mCanvas.drawText("Kyle Jacob Mucha", 1600, 130, mPaint);
-        mCanvas.drawText("Jalen Grant Hall", 1630, 190, mPaint);
-        mCanvas.drawText("Galileo Alejandro Perez", 1500, 250, mPaint);
+        mCanvas.drawText("Kyle Jacob Mucha", 1610, 130, mPaint);
+        mCanvas.drawText("Jalen Grant Hall", 1670, 195, mPaint);
+        mCanvas.drawText("Galileo Alejandro Perez", 1490, 255, mPaint);
 
     }
 
@@ -111,15 +111,5 @@ public class GameUI {
         mApple.draw(mCanvas, mPaint);
         mSnake.draw(mCanvas, mPaint);
         mObstacle.draw(mCanvas, mPaint); // Draw obstacles
-    }
-
-    public static void displayContinueMessage() {
-        synchronized (mCanvas) {
-            mPaint.setColor(Color.argb(255, 0, 0, 0));
-            mPaint.setTextSize(150);
-            Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC);
-            mPaint.setTypeface(typeface);
-            mCanvas.drawText("Press Pause to Resume!", 150, 700, mPaint); //
-        }
     }
 }
