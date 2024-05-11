@@ -19,20 +19,23 @@ public class GameUI {
     private static boolean mPaused;
     private static Snake mSnake;
     private static Apple mApple;
+
+    private static goldBasketball mGoldBasketball;
     protected static Obstacle mObstacle;
 
     private static Bitmap mBitmapKingscourt;
     private static Bitmap mBitmapPause;
     private boolean mGameStarted = false;
 
-    public GameUI(Context context, SurfaceHolder surfaceHolder, int score, Snake snake, Apple apple, Obstacle obstacle) {
+    public GameUI(Context context, SurfaceHolder surfaceHolder, int score, Snake snake, Apple apple, Obstacle obstacle, goldBasketball goldbasketball) {
         mContext = context;
         mSurfaceHolder = surfaceHolder;
         mPaint = new Paint();
         mScore = score;
         mSnake = snake;
         mApple = apple;
-        mObstacle = obstacle; // Passed from the game engine initialization
+        mObstacle = obstacle;
+        mGoldBasketball = goldbasketball; // Passed from the game engine initialization
     }
 
     public void draw() {
@@ -109,7 +112,9 @@ public class GameUI {
 
     private static void displayGameObjects() {
         mApple.draw(mCanvas, mPaint);
+        mGoldBasketball.draw(mCanvas, mPaint);
         mSnake.draw(mCanvas, mPaint);
         mObstacle.draw(mCanvas, mPaint); // Draw obstacles
+
     }
 }

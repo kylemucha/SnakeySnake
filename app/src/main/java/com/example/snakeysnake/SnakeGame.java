@@ -26,6 +26,8 @@ class SnakeGame extends SurfaceView implements Runnable {
     private int mScore;
 
     private Apple mApple;
+    private goldBasketball mGoldBasketball;
+
     private Snake mSnake;
 
     private GameUI mGameUI;
@@ -45,7 +47,7 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         initializeAudio(context);       // Initialize audio
         initializeGameObjects(context, blockSize);
-        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle);
+        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle, mGoldBasketball);
     }
 
     private void initializeAudio(Context context) {
@@ -61,6 +63,10 @@ class SnakeGame extends SurfaceView implements Runnable {
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
 
+        mGoldBasketball = new goldBasketball(context,
+                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
+                blockSize);
+
         mSnake = new Snake(context,
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
@@ -73,6 +79,7 @@ class SnakeGame extends SurfaceView implements Runnable {
     public void newGame() {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
+        mGoldBasketball.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         mObstacle.generateRandomLocations(new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), NUM_OBSTACLES);   // Generate random obstacle locations
@@ -108,6 +115,11 @@ class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn();
             mScore++;
+            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
+        }
+        if (mSnake.checkDinner(mGoldBasketball.getLocation())) {
+            mGoldBasketball.spawn();
+            mScore = mScore+ 3;
             mSP.play(mEat_ID, 100, 100, 0, 0, 1);
         }
         if (mSnake.detectDeath() || checkCollisionWithObstacle()) {
