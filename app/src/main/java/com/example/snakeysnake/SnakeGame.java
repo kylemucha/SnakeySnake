@@ -27,6 +27,7 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     private Apple mApple;
     private goldBasketball mGoldBasketball;
+    private redBasketball mRedBasketball;
 
     private Snake mSnake;
 
@@ -47,7 +48,7 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         initializeAudio(context);       // Initialize audio
         initializeGameObjects(context, blockSize);
-        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle, mGoldBasketball);
+        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle, mGoldBasketball, mRedBasketball);
     }
 
     private void initializeAudio(Context context) {
@@ -67,6 +68,10 @@ class SnakeGame extends SurfaceView implements Runnable {
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
 
+        mRedBasketball = new redBasketball(context,
+                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
+                blockSize);
+
         mSnake = new Snake(context,
                 new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
                 blockSize);
@@ -80,6 +85,7 @@ class SnakeGame extends SurfaceView implements Runnable {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
         mGoldBasketball.spawn();
+        mRedBasketball.spawn();
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         mObstacle.generateRandomLocations(new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), NUM_OBSTACLES);   // Generate random obstacle locations
@@ -119,7 +125,12 @@ class SnakeGame extends SurfaceView implements Runnable {
         }
         if (mSnake.checkDinner(mGoldBasketball.getLocation())) {
             mGoldBasketball.spawn();
-            mScore = mScore+ 3;
+            mScore = mScore + 3;
+            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
+        }
+        if (mSnake.checkDinner(mRedBasketball.getLocation())) {
+            mRedBasketball.spawn();
+            mScore = mScore - 1;
             mSP.play(mEat_ID, 100, 100, 0, 0, 1);
         }
         if (mSnake.detectDeath() || checkCollisionWithObstacle()) {
