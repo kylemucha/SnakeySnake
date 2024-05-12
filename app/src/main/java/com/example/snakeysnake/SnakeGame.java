@@ -1,17 +1,10 @@
 package com.example.snakeysnake;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Point;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import java.io.IOException;
 class SnakeGame extends SurfaceView implements Runnable {
 
     private Thread mThread = null;
@@ -21,25 +14,19 @@ class SnakeGame extends SurfaceView implements Runnable {
     private SoundPool mSP;
     private int mEat_ID = -1;
     private int mCrashID = -1;
+    private int mSwishID = -1;
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
     private int mScore;
-
     private Apple mApple;
     private goldBasketball mGoldBasketball;
     private redBasketball mRedBasketball;
-
     private Snake mSnake;
-
     private GameUI mGameUI;
     private GameAudio mGameAudio;
-
     private boolean mGameStarted = false;
-
     private Obstacle mObstacle;
     private static final int NUM_OBSTACLES = 5;
-
-
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -56,6 +43,7 @@ class SnakeGame extends SurfaceView implements Runnable {
         mSP = mGameAudio.getSoundPool();
         mEat_ID = mGameAudio.getEatSoundId();
         mCrashID = mGameAudio.getCrashSoundId();
+        mSwishID = mGameAudio.getSwishSoundId();
     }
 
     private void initializeGameObjects(Context context, int blockSize) {
@@ -118,26 +106,26 @@ class SnakeGame extends SurfaceView implements Runnable {
             return;
         }
         mSnake.move();
+
         if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn();
             mScore++;
-            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
         }
         if (mSnake.checkDinner(mGoldBasketball.getLocation())) {
             mGoldBasketball.spawn();
             mScore = mScore + 3;
-            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
+            mSP.play(mSwishID, 100, 100, 0, 0, 1);  // Swish???
         }
         if (mSnake.checkDinner(mRedBasketball.getLocation())) {
             mRedBasketball.spawn();
             mScore = mScore - 1;
-            mSP.play(mEat_ID, 100, 100, 0, 0, 1);
+            mSP.play(mEat_ID, 100, 100, 0, 0, 1);   // Whistle
         }
         if (mSnake.detectDeath() || checkCollisionWithObstacle()) {
-            mSP.play(mCrashID, 1, 1, 0, 0, 1);
             mPaused = true;
             mGameStarted = false;
             mGameUI.displayTapToPlayMessage();
+            mSP.play(mCrashID, 1, 1, 0, 0, 1);  // Buzzer
         }
 
         mGameUI.setScore(mScore);
@@ -204,4 +192,3 @@ class SnakeGame extends SurfaceView implements Runnable {
         mThread.start();
     }
 }
-
