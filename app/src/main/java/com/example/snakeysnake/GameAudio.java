@@ -70,4 +70,16 @@ class GameAudio {
 
     public int getSwishSoundId() {
         return mSwishID; }
+
+    public void playEatSound() {
+        mSP.play(mEat_ID, 1, 1, 0, 0, 1);
+    }
+
+    public void playCrashSound() {
+        mSP.play(mCrashID, 1, 1, 0, 0, 1);
+    }
+
+    public void playSwishSound() {
+        mSP.play(mSwishID, 1, 1, 0, 0, 1);
+    }
 }

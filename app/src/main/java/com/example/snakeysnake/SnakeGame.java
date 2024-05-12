@@ -114,18 +114,18 @@ class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.checkDinner(mRedBasketball.getLocation())) {
             mRedBasketball.spawn();
             mScore = mScore - 1;
-            mSP.play(mEat_ID, 1, 1, 0, 0, 1);   // Whistle
+            mGameAudio.playEatSound();   // Whistle
         }
         if (mSnake.detectDeath() || checkCollisionWithObstacle()) {
             mPaused = true;
             mGameStarted = false;
             mGameUI.displayTapToPlayMessage();
-            mSP.play(mCrashID, 1, 1, 0, 0, 1);  // Buzzer
+            mGameAudio.playCrashSound();  // Buzzer
         }
         if (mSnake.checkDinner(mGoldBasketball.getLocation())) {
             mGoldBasketball.spawn();
             mScore = mScore + 3;
-            mSP.play(mSwishID, 1, 1, 0, 0, 1);  // Swish???
+            mGameAudio.playSwishSound();    // Swish
         }
 
         mGameUI.setScore(mScore);
