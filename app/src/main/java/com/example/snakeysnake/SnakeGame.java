@@ -5,6 +5,9 @@ import android.graphics.Point;
 import android.media.SoundPool;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.content.SharedPreferences;
+import java.util.Arrays;
+import java.util.Collections;
 class SnakeGame extends SurfaceView implements Runnable {
 
     private Thread mThread = null;
@@ -31,7 +34,9 @@ class SnakeGame extends SurfaceView implements Runnable {
     private long waterBottleCooldownStartTime = 0;
     private long waterBottleCooldownPeriod = 4000; // Cooldown period (4 seconds)
     private boolean isWaterBottleOnScreen = false;
-
+    private static final String PREFS = "prefs";
+    private static final String SCORES = "scores";
+    private static Integer[] topScores = new Integer[10];
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -49,6 +54,7 @@ class SnakeGame extends SurfaceView implements Runnable {
                 mGoldBasketball,
                 mRedBasketball,
                 mWaterBottle);
+        loadScores();
     }
 
     private void initializeAudio(Context context) {
@@ -86,6 +92,38 @@ class SnakeGame extends SurfaceView implements Runnable {
                 blockSize);
     }
 
+    private void loadScores() {
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        String scoresStr = prefs.getString(SCORES, "");
+        if (!scoresStr.isEmpty()) {
+            String[] scoreStrings = scoresStr.split(",");
+            for (int i = 0; i < topScores.length; i++) {
+                topScores[i] = Integer.parseInt(scoreStrings[i]);
+            }
+        } else {
+            Arrays.fill(topScores, 0);
+        }
+    }
+    private void saveScores() {
+        SharedPreferences prefs = getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        String scoresStr = Arrays.toString(topScores).replaceAll("[\\[\\] ]", "");
+        editor.putString(SCORES, scoresStr);
+        editor.apply();
+    }
+
+    private void updateScores(int newScore) {
+        Arrays.sort(topScores, Collections.reverseOrder());
+        for (int i = 0; i < topScores.length; i++) {
+            if (newScore > topScores[i]) {
+                System.arraycopy(topScores, i, topScores, i + 1, topScores.length - 1 - i);
+                topScores[i] = newScore;
+                break;
+            }
+        }
+        saveScores();
+    }
+
     public void newGame() {
         mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
         mApple.spawn();
@@ -107,6 +145,9 @@ class SnakeGame extends SurfaceView implements Runnable {
             }
             mGameUI.draw();
         }
+    }
+    public static int getHighScore() {
+        return topScores[0]; // Assuming topScores is already sorted in descending order
     }
 
     public boolean updateRequired() {
@@ -154,7 +195,10 @@ class SnakeGame extends SurfaceView implements Runnable {
             mGameStarted = false;
             mGameUI.displayTapToPlayMessage();
             mGameAudio.playCrashSound();  // Buzzer
+            updateScores(mScore);  // Update the scores when the game ends
+            mGameUI.showLeaderboard(topScores);
         }
+
         if (mSnake.checkDinner(mGoldBasketball.getLocation())) {
             mGoldBasketball.spawn();
             mScore = mScore + 3;
