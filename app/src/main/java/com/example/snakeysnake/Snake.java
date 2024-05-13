@@ -264,6 +264,15 @@ class Snake extends GameObject implements Drawable, Movable {
         }
     }
 
+    // Reset the snake's body length to 1
+    public void resetBodyLength() {
+        // Clear the old body segments
+        segmentLocations.subList(1, segmentLocations.size()).clear();
+
+        // Add a new body segment next to the head
+        Point headPosition = segmentLocations.get(0);
+        segmentLocations.add(new Point(headPosition.x + 1, headPosition.y));
+    }
 
     // Handle changing direction
     public void switchHeading(MotionEvent motionEvent) {

@@ -17,7 +17,7 @@ class SnakeGame extends SurfaceView implements Runnable {
     private int mSwishID = -1;
     private final int NUM_BLOCKS_WIDE = 40;
     private int mNumBlocksHigh;
-    private int mScore;
+    private int mScore = 0;
     private Apple mApple;
     private goldBasketball mGoldBasketball;
     private redBasketball mRedBasketball;
@@ -27,6 +27,11 @@ class SnakeGame extends SurfaceView implements Runnable {
     private boolean mGameStarted = false;
     private Obstacle mObstacle;
     private static final int NUM_OBSTACLES = 5;
+    private WaterBottle mWaterBottle;
+    private long waterBottleCooldownStartTime = 0;
+    private long waterBottleCooldownPeriod = 4000; // Cooldown period (4 seconds)
+    private boolean isWaterBottleOnScreen = false;
+
 
     public SnakeGame(Context context, Point size) {
         super(context);
@@ -35,7 +40,15 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         initializeAudio(context);       // Initialize audio
         initializeGameObjects(context, blockSize);
-        mGameUI = new GameUI(context, getHolder(), mScore, mSnake, mApple, mObstacle, mGoldBasketball, mRedBasketball);
+        mGameUI = new GameUI(context,
+                getHolder(),
+                mScore,
+                mSnake,
+                mApple,
+                mObstacle,
+                mGoldBasketball,
+                mRedBasketball,
+                mWaterBottle);
     }
 
     private void initializeAudio(Context context) {
@@ -67,6 +80,10 @@ class SnakeGame extends SurfaceView implements Runnable {
         mObstacle = new Obstacle(context,
                 new Point[]{new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh)},
                 blockSize);
+
+        mWaterBottle = new WaterBottle(context,
+                new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh),
+                blockSize);
     }
 
     public void newGame() {
@@ -77,6 +94,7 @@ class SnakeGame extends SurfaceView implements Runnable {
         mScore = 0;
         mNextFrameTime = System.currentTimeMillis();
         mObstacle.generateRandomLocations(new Point(NUM_BLOCKS_WIDE, mNumBlocksHigh), NUM_OBSTACLES);   // Generate random obstacle locations
+        mWaterBottle.spawn();
     }
 
     @Override
@@ -110,7 +128,22 @@ class SnakeGame extends SurfaceView implements Runnable {
         if (mSnake.checkDinner(mApple.getLocation())) {
             mApple.spawn();
             mScore++;
+
+            isWaterBottleOnScreen = false;
+            // Reset the water bottle cooldown timer
+            waterBottleCooldownStartTime = System.currentTimeMillis();
         }
+
+        // Check if enough time has passed since the last water bottle was eaten
+        else if (System.currentTimeMillis() - waterBottleCooldownStartTime >= waterBottleCooldownPeriod) {
+            // Spawn the water bottle
+            mWaterBottle.spawn();
+            isWaterBottleOnScreen = true;
+
+            // Reset the water bottle cooldown timer
+            waterBottleCooldownStartTime = System.currentTimeMillis();
+        }
+
         if (mSnake.checkDinner(mRedBasketball.getLocation())) {
             mRedBasketball.spawn();
             mScore = mScore - 1;
@@ -126,6 +159,14 @@ class SnakeGame extends SurfaceView implements Runnable {
             mGoldBasketball.spawn();
             mScore = mScore + 3;
             mGameAudio.playSwishSound();    // Swish
+        }
+
+        if (mSnake.checkDinner(mWaterBottle.getLocation())) {
+            mWaterBottle.spawn();
+            mScore++;
+
+            // Reset snake body length
+            mSnake.resetBodyLength();
         }
 
         mGameUI.setScore(mScore);
