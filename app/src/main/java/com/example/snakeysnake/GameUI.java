@@ -51,9 +51,10 @@ public class GameUI {
             if (!mGameStarted) {
                 displayTapToPlayMessage();
                 displayAuthorNames();
+                displayHighScore(mCanvas, mPaint, mScore);
             } else {
                 displayScore(mCanvas, mPaint, mScore);
-                displayHighScore(mCanvas, mPaint);
+                //displayHighScore(mCanvas, mPaint);
                 displayGameObjects();
                 if(mPaused) {
 
@@ -94,6 +95,10 @@ public class GameUI {
         mCanvas.drawText("Jalen Grant Hall", 1670, 195, mPaint);
         mCanvas.drawText("Galileo Alejandro Perez", 1490, 255, mPaint);
 
+        mPaint.setColor(Color.argb(255, 255, 255, 255));
+        mCanvas.drawText("Kyle Jacob Mucha", 1603, 125, mPaint);
+        mCanvas.drawText("Jalen Grant Hall", 1663, 190, mPaint);
+        mCanvas.drawText("Galileo Alejandro Perez", 1484, 249, mPaint);
     }
 
     public void displayTapToPlayMessage() {
@@ -104,22 +109,31 @@ public class GameUI {
             mPaint.setTypeface(typeface);
 
             mCanvas.drawText("Tap the Play Button!", 170, 930, mPaint);
+            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            mCanvas.drawText("Tap the Play Button!", 164, 925, mPaint);
         }
     }
 
     public static void displayScore(Canvas canvas, Paint paint, int score) {
         synchronized (mCanvas) {
             mPaint.setColor(Color.argb(255, 168, 39, 245));
-            mPaint.setTextSize(120);
-            mCanvas.drawText("Score: " + score, 20, 130, mPaint);
+            mPaint.setTextSize(50);
+            mCanvas.drawText("SCORE: " + score, 24, 64, mPaint);
+            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            mCanvas.drawText("SCORE: " + score, 20, 60, mPaint);
         }
     }
 
-    public void displayHighScore(Canvas canvas, Paint paint) {
-        int highScore; // Directly access the static method
-        highScore = SnakeGame.getHighScore();
-        paint.setTextSize(50);
-        canvas.drawText("HI SCORE: " + highScore, 20, 40, mPaint);
+    public void displayHighScore(Canvas canvas, Paint paint, int score) {
+        synchronized (mCanvas) {
+            int highScore; // Directly access the static method
+            highScore = SnakeGame.getHighScore();
+            paint.setTextSize(50);
+            mPaint.setColor(Color.argb(255, 168, 39, 245));
+            canvas.drawText("HI SCORE: " + highScore, 24, 64, mPaint);
+            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            canvas.drawText("HI SCORE: " + highScore, 20, 60, mPaint);
+        }
     }
 
     public void showLeaderboard(Integer[] topScores) {
