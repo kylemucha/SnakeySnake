@@ -196,7 +196,6 @@ class SnakeGame extends SurfaceView implements Runnable {
             mGameUI.displayTapToPlayMessage();
             mGameAudio.playCrashSound();  // Buzzer
             updateScores(mScore);  // Update the scores when the game ends
-            mGameUI.showLeaderboard(topScores);
         }
 
         if (mSnake.checkDinner(mGoldBasketball.getLocation())) {

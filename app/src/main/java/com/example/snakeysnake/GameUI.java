@@ -136,34 +136,6 @@ public class GameUI {
         }
     }
 
-    public void showLeaderboard(Integer[] topScores) {
-        if (mSurfaceHolder.getSurface().isValid()) {
-            mCanvas = mSurfaceHolder.lockCanvas();
-            displayBackground();
-            mPaint.setColor(Color.argb(255, 168, 39, 245));
-            mPaint.setTextSize(60);
-            int centerX = mCanvas.getWidth() / 2;
-            int startY = 150;
-            // Draw leaderboard to the left
-            int leaderboardX = centerX - 300; // Adjusted left from the center
-
-            mCanvas.drawText("LEADERBOARD", leaderboardX, 100, mPaint);
-            String[] ordinals = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"};
-            for (int i = 0; i < topScores.length; i++) {
-                String text = String.format("%s: %d", ordinals[i], topScores[i]);
-                mCanvas.drawText(text, mCanvas.getWidth() / 2 - 150, startY, mPaint);
-                startY += 50; // Increase Y coordinate to avoid overlapping text
-            }
-            // Setup and display the final score to the right
-            mPaint.setTextSize(70);
-            String finalScoreText = "Final Score: " + mScore;
-            int finalScoreX = centerX + 100; // Adjusted right from the center
-            mCanvas.drawText(finalScoreText, finalScoreX, 150, mPaint); // Display final score at the same vertical start as leaderboard
-
-            mSurfaceHolder.unlockCanvasAndPost(mCanvas);
-        }
-    }
-
     private static void displayGameObjects() {
         mApple.draw(mCanvas, mPaint);
         mGoldBasketball.draw(mCanvas, mPaint);
